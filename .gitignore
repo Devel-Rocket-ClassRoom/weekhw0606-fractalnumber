@@ -1,0 +1,11 @@
+﻿################################################################################
+# 이 .gitignore 파일은 Microsoft(R) Visual Studio에서 자동으로 만들어졌습니다.
+################################################################################
+
+/.vs/주말과제2026_0529/FileContentIndex
+/.vs/주말과제2026_0529/v17/.wsuo
+/.vs/주말과제2026_0529/v17/Browse.VC.db
+/.vs/주말과제2026_0529/v17/DocumentLayout.backup.json
+/.vs/주말과제2026_0529/v17/DocumentLayout.json
+/.vs/slnx.sqlite
+/.vs/VSWorkspaceState.json
