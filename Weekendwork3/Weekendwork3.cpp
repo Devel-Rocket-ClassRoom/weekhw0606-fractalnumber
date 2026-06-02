@@ -5,7 +5,10 @@
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    // int BattleField[Height][Width] = { 0, };
+    
+    printf("■ ■ ■ ■ ■  ● ● ● ●  ★ ★ ★  ▲ ▲");
+    // 순서대로 항공모함(5), 전함(4), 순양함(3), 구축함(2)
 }
 
 // 프로그램 실행: <Ctrl+F5> 또는 [디버그] > [디버깅하지 않고 시작] 메뉴
