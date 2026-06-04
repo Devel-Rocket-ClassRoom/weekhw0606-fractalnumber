@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <conio.h>
 #include "functions.h"
 
 void Homework01_Run()
@@ -18,14 +19,13 @@ void Homework01_Run()
 	std::string AttackedPosition = "?,?";								// 공격한 좌표
 	std::string AttackResult = "[기본값]";								// 공격 성공 여부
 
-	int CarriorHealth = 10;												// 항공모함 체력
+	int CarrierHealth = 10;												// 항공모함 체력
 	int BattleshipHealth = 10;											// 전함 체력
 	int CruiserHealth = 10;												// 순양함 체력
 	int DestroyerHealth = 10;											// 구축함 체력
 
-	char InputAttackPosition[2] = {'0','0'};							// 공격할 좌표 입력
+	char InputAttackPosition[30] = {'0',};							// 공격할 좌표 입력	
 	
-	std::string DummyInput = "dummyinput";								// 진행용 더미 입력
 
 
 	// 1. 맵 초기화, 함선 배치, 맵 출력 (테스트중)
@@ -214,7 +214,7 @@ void Homework01_Run()
 
 	// 1_3. 맵 출력, 상태 표시
 
-	while (((CarriorHealth > 0) || (BattleshipHealth > 0) || (CruiserHealth > 0) || (DestroyerHealth > 0)) && (RemainShells > 0))
+	while (((CarrierHealth > 0) || (BattleshipHealth > 0) || (CruiserHealth > 0) || (DestroyerHealth > 0)) && (RemainShells > 0))
 	{
 		system("cls");
 
@@ -236,14 +236,14 @@ void Homework01_Run()
 
 			for (int f = 0; f < FieldSize; f++)
 			{
-				printf("%4s", BattleField[e][f].c_str()); // 실제 보는 맵
+				printf("%4s", HiddenField[e][f].c_str()); // 실제 보는 맵
 			}
 			printf("\n\n"); // 가로 패딩
 		}
 		
 		// 항공모함 체력을 계산하기 (내부 데이터용)
 		
-		CarriorHealth = 0;
+		CarrierHealth = 0;
 
 		for (int e = 0; e < FieldSize; e++)
 		{
@@ -251,7 +251,7 @@ void Homework01_Run()
 			{
 				if (BattleField[e][f] == "CV")
 				{
-					CarriorHealth++;
+					CarrierHealth++;
 				}
 			}
 		}
@@ -301,14 +301,17 @@ void Homework01_Run()
 			}
 		}
 		
-		
+		if ((CarrierHealth == 0 && BattleshipHealth == 0 && CruiserHealth == 0 && DestroyerHealth == 0) || RemainShells <= 0)
+		{
+			break;
+		}
 		
 		
 		
 		
 		printf("맵에는 총 4척의 함선이 있습니다. 좌표를 입력하여 공격해서 함선을 모두 제거하세요. 공격 횟수에는 제한이 있습니다.");
 		printf("\n");
-		if (CarriorHealth > 0) // 항공모함 생존여부에 따른 메시지 출력
+		if (CarrierHealth > 0) // 항공모함 생존여부에 따른 메시지 출력
 		{		
 			printf("[항공모함 : 생존]");
 		}
@@ -350,7 +353,7 @@ void Homework01_Run()
 			printf("[구축함 : 격파]");
 		}
 
-		printf("\n항공모함의 현재 체력 : [%d]  전함의 현재 체력 : [%d]  순양함의 현재 체력 : [%d]  구축함의 현재 체력 : [%d]", CarriorHealth,BattleshipHealth,CruiserHealth,DestroyerHealth);		
+		// printf("\n항공모함의 현재 체력 : [%d]  전함의 현재 체력 : [%d]  순양함의 현재 체력 : [%d]  구축함의 현재 체력 : [%d]", CarrierHealth,BattleshipHealth,CruiserHealth,DestroyerHealth);		
 		// 바로 위 출력부는 테스트용임.
 
 		printf("\n\n공격할 좌표를 입력하세요. (예시: E3) 공격했던 좌표는 재공격할 수 없습니다.");
@@ -361,39 +364,46 @@ void Homework01_Run()
 		std::cin.ignore(10000, '\n');
 		
 
-		//	잘못된 좌표를 입력하거나
+		//	잘못된 좌표를 입력하거나 이미 공격한 곳을 또 지정하는 경우
 
-		while (InputAttackPosition[0] < 65 || InputAttackPosition[0] > 74 || InputAttackPosition[1] < 48 || InputAttackPosition[1] > 57)
+		int y = (InputAttackPosition[0]) - 65;
+		int x = (InputAttackPosition[1]) - 48;
+
+		
+		while ((InputAttackPosition[0] < 65 || InputAttackPosition[0] > 74 || InputAttackPosition[1] < 48 || InputAttackPosition[1] > 57) || 
+			strlen(InputAttackPosition) != 2 || (BattleField[y][x] == "X") || (BattleField[y][x] == "O"))
 		{
-			if (InputAttackPosition[0] < 65 || InputAttackPosition[0] > 74 || InputAttackPosition[1] < 48 || InputAttackPosition[1] > 57)
+			if ((InputAttackPosition[0] < 65 || InputAttackPosition[0] > 74 || InputAttackPosition[1] < 48 || InputAttackPosition[1] > 57) || strlen(InputAttackPosition) != 2)
 			{
-				printf("\n잘못된 좌표를 입력했습니다. 다시 입력해주세요.");
+				printf("\n잘못된 좌표를 입력했습니다. 다시 입력해주세요. (세로 좌표는 대문자로 입력)");
 				std::cin >> InputAttackPosition;
 				std::cin.clear();
 				std::cin.ignore(10000, '\n');
+
+				y = InputAttackPosition[0] - 'A';
+				x = InputAttackPosition[1] - '0';
 			}
-		}
-
-		/*
-		// 이미 공격한 곳을 또 지정하는 경우
-
-		while ((BattleField[InputAttackPosition[0]][InputAttackPosition[1]] == "X") || (BattleField[InputAttackPosition[0]][InputAttackPosition[1]] == "O"))
-		{
-			if ((BattleField[InputAttackPosition[0]][InputAttackPosition[1]] == "X") || (BattleField[InputAttackPosition[0]][InputAttackPosition[1]] == "O"))
+			else if ((BattleField[y][x] == "X") || (BattleField[y][x] == "O"))
 			{
 				printf("\n이미 공격한 좌표입니다. 다시 입력해주세요.");
 				std::cin >> InputAttackPosition;
 				std::cin.clear();
 				std::cin.ignore(10000, '\n');
+
+				y = InputAttackPosition[0] - 'A';
+				x = InputAttackPosition[1] - '0';
 			}
+
 		}
 
-		*/
+
+
+		
 		//	루프 빠져나와서 정상 공격 처리하는 부분
 
 
-		int y = (InputAttackPosition[0]) - 65;
-		int x = (InputAttackPosition[1]) - 48;
+
+
 		if (BattleField[y][x] == ".")
 		{
 			printf("\n명중 실패! 빗나갔습니다.");
@@ -409,14 +419,44 @@ void Homework01_Run()
 			RemainShells--;
 		}
 
-		printf("\n아무 키나 입력하여 계속합니다.");
-		std::cin >> DummyInput;
-		std::cin.clear();
-		std::cin.ignore(10000, '\n');
+		printf("\n아무 키나 누르면 계속 진행합니다...");
 
+		_getch();
 
 		
 	}
+	if (CarrierHealth == 0 && BattleshipHealth == 0 && CruiserHealth == 0 && DestroyerHealth == 0)
+	{
+		printf("\n\n★★★ 모든 함선을 격침시켰습니다. 승리! ★★★");
+	}
+	else if (RemainShells <= 0)
+	{
+		system("cls");
 
+		printf("--------------- [배틀쉽 게임] ---------------\n\n");
+
+		printf(" "); // 가로좌표 패딩
+
+		for (int e = 0; e < FieldSize; e++)
+		{
+			printf("%4d", Width[e]);
+		}
+
+		printf("\n\n"); // 높이 패딩
+
+		for (int e = 0; e < FieldSize; e++)
+		{
+			Height[e] = 'A' + e; // ASCII code A 값에서 1만큼 증가시킴. 
+			printf("%c", Height[e]);
+
+			for (int f = 0; f < FieldSize; f++)
+			{
+				printf("%4s", BattleField[e][f].c_str()); // 실제 보는 맵
+			}
+			printf("\n\n"); // 가로 패딩
+		}
+		
+		printf("\n\n===== 공격 횟수가 모두 소진되었습니다.. 패배 =====");
+	}
 	}
 
