@@ -5,11 +5,11 @@
 #include <time.h>
 #include "functions.h"
 
-
+#define _CRT_SECURE_NO_WARNINGS
 
 int main()
 {
-    srand(time(NULL));    
+    srand(time(0));    
 
     Homework01_Run();
       

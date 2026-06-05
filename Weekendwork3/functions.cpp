@@ -3,13 +3,15 @@
 #include <conio.h>
 #include "functions.h"
 
+
+
 void Homework01_Run()
 {
 	const int FieldSize = 10;											// 가로세로 크기 지정
 	int Width[FieldSize] = { 0, };										// 가로 좌표 표시용 배열
-	char Height[FieldSize] = { 0, };										// 세로 좌표 표시용 배열
-	std::string BattleField[FieldSize][FieldSize] = { ".", };				// 가로세로 크기만큼의 맵 (탄환 전부 소진시에는 보여줌)
-	std::string HiddenField[FieldSize][FieldSize] = { ".", };				// 가로세로 크기만큼의 플레이어에게 보여주는 맵
+	char Height[FieldSize] = { 0, };									// 세로 좌표 표시용 배열
+	std::string BattleField[FieldSize][FieldSize] = { ".", };			// 가로세로 크기만큼의 맵 (탄환 전부 소진시에는 보여줌)
+	std::string HiddenField[FieldSize][FieldSize] = { ".", };			// 가로세로 크기만큼의 플레이어에게 보여주는 맵
 
 	int ShipDeployIsVertical = 0;										// 함선 최초 배치시 세로로 배치할건지 (0은 가로배치, 1은 세로배치)
 	int DeployPositionWidth = 0;										// 배치를 시도할 최초 가로좌표 (함선에 따라 배치 시도를 할 끝 위치가 다름)
@@ -24,7 +26,7 @@ void Homework01_Run()
 	int CruiserHealth = 10;												// 순양함 체력
 	int DestroyerHealth = 10;											// 구축함 체력
 
-	char InputAttackPosition[30] = {'0',};							// 공격할 좌표 입력	
+	char InputAttackPosition[30] = {'0',};								// 공격할 좌표 입력	
 	
 
 
@@ -425,11 +427,75 @@ void Homework01_Run()
 
 		
 	}
+
+	// 최종 결과 출력 전 체력을 한번 더 계산
+
+	// 항공모함 체력을 계산하기 (내부 데이터용)
+
+	CarrierHealth = 0;
+
+	for (int e = 0; e < FieldSize; e++)
+	{
+		for (int f = 0; f < FieldSize; f++)
+		{
+			if (BattleField[e][f] == "CV")
+			{
+				CarrierHealth++;
+			}
+		}
+	}
+
+	// 전함 체력을 계산하기 (내부 데이터용)
+
+	BattleshipHealth = 0;
+
+	for (int e = 0; e < FieldSize; e++)
+	{
+		for (int f = 0; f < FieldSize; f++)
+		{
+			if (BattleField[e][f] == "BB")
+			{
+				BattleshipHealth++;
+			}
+		}
+	}
+
+	// 순양함 체력을 계산하기 (내부 데이터용)
+
+	CruiserHealth = 0;
+
+	for (int e = 0; e < FieldSize; e++)
+	{
+		for (int f = 0; f < FieldSize; f++)
+		{
+			if (BattleField[e][f] == "C")
+			{
+				CruiserHealth++;
+			}
+		}
+	}
+
+	// 순양함 체력을 계산하기 (내부 데이터용)
+
+	DestroyerHealth = 0;
+
+	for (int e = 0; e < FieldSize; e++)
+	{
+		for (int f = 0; f < FieldSize; f++)
+		{
+			if (BattleField[e][f] == "DD")
+			{
+				DestroyerHealth++;
+			}
+		}
+	}
+
+
 	if (CarrierHealth == 0 && BattleshipHealth == 0 && CruiserHealth == 0 && DestroyerHealth == 0)
 	{
 		printf("\n\n★★★ 모든 함선을 격침시켰습니다. 승리! ★★★");
 	}
-	else if (RemainShells <= 0)
+	else if ((CarrierHealth != 0 || BattleshipHealth != 0 || CruiserHealth != 0 || DestroyerHealth != 0) && RemainShells <= 0)
 	{
 		system("cls");
 
